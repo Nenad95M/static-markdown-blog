@@ -13,6 +13,19 @@ const Post = ({ post }) => {
                     {post.frontmatter.category}
                 </div>
              </div>
+             <div className="mt-2">
+                    <Link href={`/blog/${post.slug}`}>
+                       {post.frontmatter.title}
+                    </Link>
+                    <p className="flex justify-between items-center mt-6">{post.frontmatter.excerpt}</p>
+              <Link className="text-blue-900 hover:text-blue-600" href={`blog/${post.slug}`}>
+                Read more
+              </Link>
+                </div>
+        <div className="flex items-center mt-2">
+            <img src={post.frontmatter.author_image} alt="Author image" className="mx-4 w-10 h-10 object-cover rounded-full hidden sm:block" />
+       <h3 className="text-gray-700 font-bold">{post.frontmatter.author}</h3>
+        </div>
              </div>
     )
 }
