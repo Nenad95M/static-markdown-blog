@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter'
 import Link from 'next/link';
+import { sortByDate } from '../utils';
 import { Layout } from "../components/Layout"
 import Post from '../components/Post';
 export default function Home({ posts }) {
@@ -44,7 +45,7 @@ export async function getStaticProps() {
   //
   return {
     props: {
-      posts
+      posts:posts.sort(sortByDate).slice(0,3)
     },
   }
 }
