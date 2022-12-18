@@ -2,3 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.blog-text p{
+    padding-bottom: 1rem;
+    text-align: start;
+    line-height: 1.7;
+}
+pre{
+    border: 1px solid gray;
+    width: fit-content;
+    padding: 1rem;
+}
+code {
+    font-style: oblique;
+}
