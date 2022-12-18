@@ -3,11 +3,11 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter'
 import Link from 'next/link';
-import { sortByDate } from '../../../utils';
-import { Layout } from "../../../components/Layout"
-import Post from '../../../components/Post';
-import { POSTS_PER_PAGE } from '../../../config';
-import Pagination from '../../../components/Pagination';
+import { sortByDate } from '@/utils/index';
+import { Layout } from "@/components/Layout"
+import Post from '@/components/Post';
+import { POSTS_PER_PAGE } from '@/config/index';
+import Pagination from '@/components/Pagination';
 
 export default function BlogPage({ posts, numPages, currentPage }) {
     return (

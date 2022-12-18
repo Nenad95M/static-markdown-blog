@@ -4,8 +4,8 @@ import Link from 'next/link';
 import matter from 'gray-matter';
 import { marked } from 'marked';
 
-import { Layout } from '../../components/Layout';
-import CategoryLabel from '../../components/CategoryLabel';
+import { Layout } from '@/components/Layout';
+import CategoryLabel from '@/components/CategoryLabel';
 export default function PostPage({ frontmatter, content, slug }) {
     const { title, category, date, cover_image, author, author_image } = frontmatter;
     console.log(author)

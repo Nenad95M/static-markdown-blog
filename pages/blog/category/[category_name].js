@@ -6,8 +6,7 @@ import Link from 'next/link';
 import { sortByDate } from '@/utils/index';
 import { Layout } from "@/components/Layout"
 import Post from '@/components/Post';
-export default function Home({ posts }) {
-  console.log(posts)
+export default function CategoryBlogPage({ posts }) {
   return (
     <Layout>
       <h1 className='text-5xl border-b-4 p-5 font-bold'>Latest Posts</h1>
@@ -24,7 +23,25 @@ export default function Home({ posts }) {
   )
 }
 
-export async function getStaticProps() {
+export async function getStaticPaths(){
+    const files=fs.readdirSync(path.join('posts'));
+    const categories=files.map(filename=>{
+        const markdownWithMeta=fs.readFileSync(path.join('posts', filename), 'utf-8');
+        const {data:frontmatter}=matter(markdownWithMeta);
+
+        return frontmatter.category.toLowerCase();
+    })
+    //mapiramo svaku kategoriju kao vrednost kljuca category_name
+const paths=categories.map(category=>({
+    params:{category_name:category}
+}))
+    return{
+        paths,
+        fallback:false,
+    }
+}
+
+export async function getStaticProps({params:{category_name}}) {
   //ucitavamo direktorijum i pravimo niz od naziva njegovih fajlova
   const files = fs.readdirSync(path.join('posts'));
   //mapiramo niz naziva ovih fajlova
@@ -43,9 +60,14 @@ export async function getStaticProps() {
   })
   //mapirani niz posts gde koristimo module, vracamo kao staticki props
   //
+
+  //filtriramo postove po kategoriji
+  const categoryPosts=posts.filter(post=>post.frontmatter.category.toLowerCase()===category_name
+)
   return {
     props: {
-      posts:posts.sort(sortByDate).slice(0,3)
+      posts:categoryPosts.sort(sortByDate),
+      category_name:category_name
     },
   }
 }
