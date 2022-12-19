@@ -1,28 +1,36 @@
 //importujemo node module, mozemo samo da ih koristimo unutar getStaticProps koji ide na serveru
 import fs from 'fs';
 import path from 'path';
-import matter from 'gray-matter'
-import Link from 'next/link';
-import { sortByDate } from '@/utils/index';
 import { Layout } from "@/components/Layout"
 import Post from '@/components/Post';
+import Link from 'next/link';
 import { POSTS_PER_PAGE } from '@/config/index';
 import Pagination from '@/components/Pagination';
+import CategoryList from '@/components/CategoryList';
+import { getPosts } from '@/lib/posts';
 
-export default function BlogPage({ posts, numPages, currentPage }) {
+export default function BlogPage({ posts, numPages, currentPage, categories }) {
     return (
         <Layout>
-            <h1 className='text-5xl border-b-4 p-5 font-bold'>Blog</h1>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {posts.map((post, index) => (
-                    <Post key={index} post={post} />
-                )
-                )}
-            </div>
-            <Link className='block text-center border border-gray-500 text-gray-800 rounded-md py-4 my-5
+            <div className="flex justify-between">
+                <div className="w-3/4 mr-10">
+                    <h1 className='text-5xl border-b-4 p-5 font-bold'>Blog</h1>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {posts.map((post, index) => (
+                            <Post key={index} post={post} />
+                        )
+                        )}
+                    </div>
+                    <Link className='block text-center border border-gray-500 text-gray-800 rounded-md py-4 my-5
       transition duration-500 ease select-none hover:text-white
       hover:bg-gray-900 focus:outline-none focus:shadow-outline w-full' href={'/'}>Back to home page</Link>
-            <Pagination currentPage={currentPage} numPages={numPages}/>
+                    <Pagination currentPage={currentPage} numPages={numPages} />
+                </div>
+                <div className='w-1/4'>
+                    <CategoryList categories={categories} />
+                </div>
+            </div>
+
         </Layout>
     )
 }
@@ -51,29 +59,22 @@ export async function getStaticProps({ params }) {
     //ucitavamo direktorijum i pravimo niz od naziva njegovih fajlova
     const files = fs.readdirSync(path.join('posts'));
     //mapiramo niz naziva ovih fajlova
-    const posts = files.map(filename => {
-        //za svaki slug uzimamo naziv mapiranog fajla bez ekstenzije .md
-        const slug = filename.replace('.md', '');
-        //ucitavamo svaki fajl
-        const markdownWithMeta = fs.readFileSync(path.join('posts', filename), 'utf-8')
-        //pozivamo matter funkciju iz gray-matter biblioteke
-        const { data: frontmatter } = matter(markdownWithMeta);
-        //fracamo slug i frontmatter sto je ucitani naziv fajla
-        return {
-            slug,
-            frontmatter
-        }
-    })
+    const posts = getPosts();
+    //get categories for sidebar
+    const categories = posts.map(post => post.frontmatter.category);
+    const uniqueCategories = [...new Set(categories)];
+
     const numPages = Math.ceil(files.length / POSTS_PER_PAGE);
     const pageIndex = page - 1;
-    const orderedPosts = posts.sort(sortByDate).slice(pageIndex * POSTS_PER_PAGE, (pageIndex + 1) * POSTS_PER_PAGE);
+    const orderedPosts = posts.slice(pageIndex * POSTS_PER_PAGE, (pageIndex + 1) * POSTS_PER_PAGE);
     //mapirani niz posts gde koristimo module, vracamo kao staticki props
     //
     return {
         props: {
             posts: orderedPosts,
             numPages,
-            currentPage: page
+            currentPage: page,
+            categories: uniqueCategories
         },
     }
 }
