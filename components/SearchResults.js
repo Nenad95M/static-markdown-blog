@@ -1,6 +1,6 @@
 import Post from "./Post"
 export default function SearchResults({ results }) {
-    if (typeof results === 'undefined' || results.length === 0) return <></>
+    if (results.length === 0) return <></>
     return (
         <div className="absolute top-20 right-0 md:right-10 z-10
      border-4 border-gray-500 bg-white text-black

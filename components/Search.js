@@ -4,10 +4,10 @@ import SearchResults from './SearchResults';
 
 export default function Search() {
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
+    const [results, setSearchResults] = useState([]);
     useEffect(() => {
         const getResults = async () => {
-            if (searchResults === '') {
+            if (results === '') {
                 setSearchResults([])
             }
             else{
@@ -35,7 +35,7 @@ export default function Search() {
                     </form>
                 </div>
             </div>
-            <SearchResults results={searchResults}/>
+            <SearchResults results={results}/>
         </div>
     )
 }
