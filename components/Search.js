@@ -9,12 +9,15 @@ export default function Search() {
         const getResults = async () => {
             if (searchResults === '') {
                 setSearchResults([])
-                return;
             }
+            else{
+
             const res = await fetch(`/api/search?q=${searchTerm}`);
             const { results } = await res.json();
-            console.log(results)
+            console.log(res)
             setSearchResults(results);
+        }
+
         }
         getResults();
     }, [searchTerm])
